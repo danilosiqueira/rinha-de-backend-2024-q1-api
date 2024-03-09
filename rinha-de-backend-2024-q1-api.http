@@ -1,6 +1,0 @@
-@rinha_de_backend_2024_q1_api_HostAddress = http://localhost:5207
-
-GET {{rinha_de_backend_2024_q1_api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
