@@ -24,9 +24,17 @@ public class ClienteController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public Cliente Get(int id)
+    public IActionResult Get(int id)
     {
-        return _clienteRepository.Obter(id);
+        try
+        {
+            return Ok(_clienteRepository.Obter(id));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return StatusCode(500, "Um problema ocorreu ao processar a sua solicitação.");
+        }
     }
 
     [HttpPost("{id}/transacoes")]
@@ -61,15 +69,28 @@ public class ClienteController : ControllerBase
     [HttpGet("{id}/extrato")]
     public IActionResult GetExtrato(int id)
     {
-        var cliente = _clienteRepository.ObterComTransacoes(id);
-        var extrato = new {
-            Saldo = new {
-                Total = cliente.Saldo,
-                DataExtrato = DateTime.Now,
-                Limite = cliente.Limite
-            },
-            UltimasTransacoes = cliente.Transacoes
-        };
-        return Ok(extrato);
+        try
+        {
+            var cliente = _clienteRepository.ObterComTransacoes(id);
+            if (cliente == null)
+                return NotFound($"Cliente { id } não encontado.");
+
+            var extrato = new {
+                Saldo = new {
+                    Total = cliente.Saldo,
+                    DataExtrato = DateTime.Now,
+                    Limite = cliente.Limite
+                },
+                UltimasTransacoes = cliente.Transacoes
+            };
+
+            return Ok(extrato);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return StatusCode(500, "Um problema ocorreu ao processar a sua solicitação.");
+        }
+
     }
 }

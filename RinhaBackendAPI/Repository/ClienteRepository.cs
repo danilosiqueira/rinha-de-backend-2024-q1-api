@@ -31,7 +31,7 @@ namespace RinhaBackendAPI.Repository
             conn.Execute(sql, new { Saldo = saldo, Id = id });
         }
 
-        public Cliente ObterComTransacoes(int id)
+        public Cliente? ObterComTransacoes(int id)
         {
             var sql = @"
             select * from clientes where id = @Id;
@@ -41,7 +41,9 @@ namespace RinhaBackendAPI.Repository
             order by realizada_em desc
             limit 10";
             using var multi = conn.QueryMultiple(sql, new { Id = id });
-            var cliente = multi.Read<Cliente>().Single();
+            var cliente = multi.Read<Cliente>().SingleOrDefault();
+            if (cliente == null)
+                return null;
             cliente.Transacoes = multi.Read<Transacao>().ToList();
             return cliente;
         }
