@@ -57,4 +57,19 @@ public class ClienteController : ControllerBase
             return StatusCode(500, "Um problema ocorreu ao processar a sua solicitação.");
         }
     }
+
+    [HttpGet("{id}/extrato")]
+    public IActionResult GetExtrato(int id)
+    {
+        var cliente = _clienteRepository.ObterComTransacoes(id);
+        var extrato = new {
+            Saldo = new {
+                Total = cliente.Saldo,
+                DataExtrato = DateTime.Now,
+                Limite = cliente.Limite
+            },
+            UltimasTransacoes = cliente.Transacoes
+        };
+        return Ok(extrato);
+    }
 }

@@ -30,5 +30,20 @@ namespace RinhaBackendAPI.Repository
             var sql = "update clientes set saldo = @Saldo where id = @Id";
             conn.Execute(sql, new { Saldo = saldo, Id = id });
         }
+
+        public Cliente ObterComTransacoes(int id)
+        {
+            var sql = @"
+            select * from clientes where id = @Id;
+            select *
+            from transacoes
+            where cliente_id = @Id
+            order by realizada_em desc
+            limit 10";
+            using var multi = conn.QueryMultiple(sql, new { Id = id });
+            var cliente = multi.Read<Cliente>().Single();
+            cliente.Transacoes = multi.Read<Transacao>().ToList();
+            return cliente;
+        }
     }
 }

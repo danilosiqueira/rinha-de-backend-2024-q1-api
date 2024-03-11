@@ -6,6 +6,7 @@ namespace RinhaBackendAPI.Models
         public Int64 Valor { get; set; }
         public string Tipo { get; set; }
         public string Descricao { get; set; }
+        public DateTime RealizadaEm { get; set; }
         public int ClienteId { get; set; }
     }
 }

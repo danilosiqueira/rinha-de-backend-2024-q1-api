@@ -6,5 +6,6 @@ namespace RinhaBackendAPI.Models
         public string Nome { get; set; }
         public Int64 Limite { get; set; }
         public Int64 Saldo { get; set; }
+        public IEnumerable<Transacao> Transacoes { get; set; }
     }
 }
